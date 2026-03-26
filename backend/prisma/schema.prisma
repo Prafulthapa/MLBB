@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Package {
+  id       Int     @id @default(autoincrement())
+  name     String
+  diamonds Int
+  bonus    Int     @default(0)
+  price    Float
+  active   Boolean @default(true)
+  orders   Order[]
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  userId        Int?
+  user          User?    @relation(fields: [userId], references: [id])
+  packageId     Int
+  package       Package  @relation(fields: [packageId], references: [id])
+  gameUserId    String
+  gameZoneId    String
+  paymentMethod String
+  status        String   @default("pending")
+  receiptPath   String?
+  totalPrice    Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  note          String?
+}

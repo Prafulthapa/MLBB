@@ -1,0 +1,70 @@
+﻿version: '3.9'
+
+services:
+
+  # â”€â”€ PostgreSQL Database â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  db:
+    image: postgres:16-alpine
+    container_name: mlbb_db
+    restart: always
+    environment:
+      POSTGRES_USER: mlbbuser
+      POSTGRES_PASSWORD: mlbbpassword
+      POSTGRES_DB: mlbb_topup
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - mlbb_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mlbbuser -d mlbb_topup"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # â”€â”€ Node.js API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mlbb_api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://mlbbuser:mlbbpassword@db:5432/mlbb_topup
+      JWT_SECRET: change_this_to_a_long_secret_before_deploy_xyz789
+      PORT: 4000
+      ADMIN_EMAIL: admin@mlbbtopup.com
+      ADMIN_PASSWORD: Admin@1234
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - mlbb_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # â”€â”€ nginx (serves frontend + proxies API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  nginx:
+    image: nginx:alpine
+    container_name: mlbb_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./mlbb-topup.html:/usr/share/nginx/html/mlbb-topup.html:ro
+      - ./admin:/usr/share/nginx/html/admin:ro
+      - ssl_certs:/etc/letsencrypt:ro
+    networks:
+      - mlbb_net
+    depends_on:
+      - api
+
+networks:
+  mlbb_net:
+    driver: bridge
+
+volumes:
+  db_data:
+  uploads_data:
+  ssl_certs:
