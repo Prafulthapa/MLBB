@@ -1,3 +1,66 @@
+# ============================================================
+#  MLBB TopUp Nepal - Special Packages UI
+#  Adds Weekly Diamond Pass + Twilight Pass sections
+#  Run from: D:\MLBB>  .\phase_special_packages.ps1
+# ============================================================
+
+Write-Host ""
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "  Adding Weekly Pass + Twilight Pass UI" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host ""
+
+# ── STEP 1: Add special packages to DB via seed patch ───────
+Write-Host "[1/2] Adding special packages to database..." -ForegroundColor Yellow
+
+$seedPatch = @"
+// Run: node add_special_packages.js
+require('dotenv').config();
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+const specials = [
+  { name: 'Weekly Pass 1x',  diamonds: 0, bonus: 0, price: 272.31 },
+  { name: 'Weekly Pass 2x',  diamonds: 0, bonus: 0, price: 600.00 },
+  { name: 'Weekly Pass 3x',  diamonds: 0, bonus: 0, price: 900.48 },
+  { name: 'Weekly Pass 4x',  diamonds: 0, bonus: 0, price: 1200.00 },
+  { name: 'Twilight Pass',   diamonds: 0, bonus: 0, price: 1588.80 },
+];
+
+async function main() {
+  for (const pkg of specials) {
+    const existing = await prisma.package.findFirst({ where: { name: pkg.name } });
+    if (existing) {
+      await prisma.package.update({ where: { id: existing.id }, data: pkg });
+      console.log('Updated:', pkg.name);
+    } else {
+      await prisma.package.create({ data: pkg });
+      console.log('Created:', pkg.name);
+    }
+  }
+  console.log('Done!');
+}
+main().catch(console.error).finally(() => prisma.$disconnect());
+"@
+
+$stream = [System.IO.StreamWriter]::new(
+    (Join-Path (Get-Location).Path "backend\add_special_packages.js"),
+    $false,
+    (New-Object System.Text.UTF8Encoding $false)
+)
+$stream.Write($seedPatch)
+$stream.Close()
+
+# Run the seed
+Push-Location "backend"
+node add_special_packages.js
+Pop-Location
+Write-Host "      Special packages added to DB." -ForegroundColor Green
+
+# ── STEP 2: Rewrite mlbb-topup.html with special sections ───
+Write-Host "[2/2] Updating mlbb-topup.html with special package sections..." -ForegroundColor Yellow
+
+$html = @"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,35 +70,38 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#FFD700;--gold-light:#FFE657;--gold-dark:#C8A800;--blue:#00C8FF;--blue-deep:#0047FF;--red:#FF2D55;--bg-dark:#080C14;--bg-card:#0E1422;--bg-card2:#121929;--border:rgba(255,215,0,0.18);--text:#E8EAF6;--text-muted:#7B86A0;}
+:root{--gold:#FFD700;--gold-dark:#C8A800;--blue:#00C8FF;--red:#FF2D55;--green:#00E676;--bg-dark:#080C14;--bg-card:#0E1422;--bg-card2:#121929;--border:rgba(255,215,0,0.18);--text:#E8EAF6;--text-muted:#7B86A0;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Exo 2',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 10%,rgba(0,71,255,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(0,200,255,0.08) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 50% 50%,rgba(255,215,0,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 10%,rgba(0,71,255,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(0,200,255,0.08) 0%,transparent 60%);pointer-events:none;z-index:0;}
 
-/* â”€â”€ BANNER â”€â”€ */
+/* BANNER */
 .banner-wrap{position:relative;z-index:1;width:100%;max-height:320px;overflow:hidden;}
 .banner-wrap img{width:100%;max-height:320px;object-fit:cover;object-position:center top;display:block;}
 .banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,0) 30%,rgba(8,12,20,0.95) 100%);}
 
-/* â”€â”€ HERO â”€â”€ */
+/* HERO */
 .hero{position:relative;z-index:1;text-align:center;padding:32px 20px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,71,255,0.06) 0%,transparent 100%);}
 .logo-wrap{display:inline-flex;align-items:center;gap:16px;margin-bottom:8px;}
-.logo-icon{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#FFD700,#FF6B00);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 30px rgba(255,215,0,0.4),0 0 60px rgba(255,107,0,0.2);animation:pulse-logo 3s ease-in-out infinite;}
+.logo-icon{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#FFD700,#FF6B00);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 30px rgba(255,215,0,0.4);animation:pulse-logo 3s ease-in-out infinite;}
 @keyframes pulse-logo{0%,100%{box-shadow:0 0 30px rgba(255,215,0,0.4),0 0 60px rgba(255,107,0,0.2);}50%{box-shadow:0 0 50px rgba(255,215,0,0.7),0 0 100px rgba(255,107,0,0.4);}}
 .logo-text{font-family:'Orbitron',sans-serif;font-weight:900;font-size:2rem;background:linear-gradient(90deg,#FFD700,#FF6B00,#FFD700);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;letter-spacing:2px;}
 @keyframes shimmer{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.3);border-radius:50px;padding:4px 16px;font-size:0.8rem;color:var(--blue);font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px;margin-top:8px;}
 .hero-badge::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--blue);animation:blink 1.5s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
 
 .container{max-width:960px;margin:0 auto;padding:0 20px 60px;position:relative;z-index:1;}
+
+/* SECTION HEADERS */
 .section-header{display:flex;align-items:center;gap:14px;margin:40px 0 24px;}
 .step-badge{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:0.95rem;color:#000;flex-shrink:0;box-shadow:0 0 20px rgba(255,215,0,0.4);}
 .section-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:2px;text-transform:uppercase;color:#fff;}
 .section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
+/* GAME ID */
 .game-id-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;overflow:hidden;}
 .game-id-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .game-id-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -47,13 +113,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .id-hint{margin-top:16px;padding:12px 16px;background:rgba(0,200,255,0.06);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
 .id-hint strong{color:var(--blue);}
 
+/* DIAMOND GRID */
 .diamond-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
 .diamond-card{background:var(--bg-card);border:1.5px solid rgba(255,215,0,0.1);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
 .diamond-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.06),transparent);opacity:0;transition:opacity 0.25s;}
 .diamond-card:hover{border-color:rgba(255,215,0,0.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,0.15);}
-.diamond-card:hover::after{opacity:1;}
+.diamond-card:hover::after,.diamond-card.selected::after{opacity:1;}
 .diamond-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,215,0,0.3),0 8px 30px rgba(255,215,0,0.2);background:rgba(255,215,0,0.06);}
-.diamond-card.selected::after{opacity:1;}
 .card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .diamond-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;color:#fff;line-height:1.2;}
 .diamond-bonus{font-size:0.72rem;color:var(--gold);margin-top:2px;}
@@ -65,7 +131,50 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .loading-grid{text-align:center;padding:40px;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:2px;}
 .diamond-svg{width:44px;height:44px;flex-shrink:0;}
 
-/* â”€â”€ PAYMENT CARDS â”€â”€ */
+/* ── SPECIAL OFFERS SECTION ── */
+.special-section{margin-top:32px;}
+.special-section-label{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.special-section-label .fire{font-size:20px;}
+.special-section-label h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:1px;color:#fff;text-transform:uppercase;}
+
+/* Weekly pass grid */
+.weekly-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+
+/* Special card — used for both weekly variants and twilight */
+.special-card{background:var(--bg-card);border:1.5px solid rgba(255,215,0,0.1);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
+.special-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.06),transparent);opacity:0;transition:opacity 0.25s;}
+.special-card:hover{border-color:rgba(255,215,0,0.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,0.15);}
+.special-card:hover::after,.special-card.selected::after{opacity:1;}
+.special-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,215,0,0.3),0 8px 30px rgba(255,215,0,0.2);background:rgba(255,215,0,0.06);}
+.special-card .selected-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;color:#000;font-weight:900;z-index:2;}
+.special-card.selected .selected-check{display:flex;}
+
+.special-img-wrap{position:relative;margin-bottom:10px;}
+.special-img-wrap img{width:100%;height:80px;object-fit:cover;border-radius:8px;display:block;}
+.special-badge{position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#FF2D55,#FF6B00);border-radius:5px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#fff;font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.special-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:8px;line-height:1.3;}
+.special-pricing{display:flex;align-items:center;justify-content:space-between;}
+.special-price{font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700;color:var(--gold);}
+.special-label-from{font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.special-discount{background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.3);border-radius:5px;padding:1px 6px;font-size:0.7rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;}
+
+/* Twilight pass — single wide card */
+.twilight-card{background:var(--bg-card);border:1.5px solid rgba(255,215,0,0.1);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;display:flex;align-items:center;gap:16px;max-width:400px;}
+.twilight-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.06),transparent);opacity:0;transition:opacity 0.25s;}
+.twilight-card:hover{border-color:rgba(255,215,0,0.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,0.15);}
+.twilight-card:hover::after,.twilight-card.selected::after{opacity:1;}
+.twilight-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,215,0,0.3),0 8px 30px rgba(255,215,0,0.2);background:rgba(255,215,0,0.06);}
+.twilight-card .selected-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;color:#000;font-weight:900;z-index:2;}
+.twilight-card.selected .selected-check{display:flex;}
+.twilight-img{width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.twilight-info{flex:1;}
+.twilight-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:6px;}
+.twilight-from{font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.twilight-pricing{display:flex;align-items:center;gap:10px;}
+.twilight-price{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--gold);}
+.twilight-discount{background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.3);border-radius:5px;padding:1px 7px;font-size:0.72rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;}
+
+/* PAYMENT */
 .payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 @media(max-width:480px){.payment-grid{grid-template-columns:1fr;}}
 .payment-card{background:var(--bg-card);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:14px;}
@@ -73,13 +182,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .payment-card.selected{border-color:var(--blue);background:rgba(0,200,255,0.06);box-shadow:0 0 30px rgba(0,200,255,0.15);}
 .pay-logo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .pay-logo img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
-.pay-logo-fallback{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.pay-esewa-bg{background:linear-gradient(135deg,#60B246,#3d8a2e);}
-.pay-bank-bg{background:linear-gradient(135deg,#1a73e8,#0d47a1);}
+.pay-bank-bg{background:linear-gradient(135deg,#1a73e8,#0d47a1);font-size:26px;}
 .pay-info h4{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;}
 .pay-info p{font-size:0.78rem;color:var(--text-muted);margin-top:2px;}
-
-/* â”€â”€ PAYMENT DETAILS â”€â”€ */
 .pay-detail{display:none;background:var(--bg-card2);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-top:6px;animation:fadeIn 0.3s ease;}
 .pay-detail.visible{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
@@ -96,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .receipt-upload input[type=file]{width:100%;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,215,0,0.3);border-radius:10px;padding:12px 16px;color:var(--text-muted);font-size:0.85rem;cursor:pointer;outline:none;}
 .receipt-upload input[type=file]:hover{border-color:var(--gold);}
 
-/* â”€â”€ ORDER â”€â”€ */
+/* ORDER */
 .order-section{margin-top:28px;text-align:center;}
 .order-summary{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
 .order-info{text-align:left;}
@@ -111,7 +216,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .success-banner p{font-size:0.85rem;color:var(--text-muted);line-height:1.6;}
 .success-banner .order-ref{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:#00E676;font-weight:700;margin:8px 0;}
 
-/* â”€â”€ PRICE TABLE â”€â”€ */
+/* PRICE TABLE */
 .price-table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
 .price-table-header{background:linear-gradient(90deg,rgba(255,215,0,0.12),rgba(255,107,0,0.08));padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .price-table-header h3{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1rem;color:var(--gold);letter-spacing:1px;}
@@ -128,7 +233,7 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 .table-scroll::-webkit-scrollbar{width:4px;}
 .table-scroll::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.3);border-radius:4px;}
 
-/* â”€â”€ CONTACT â”€â”€ */
+/* CONTACT */
 .contact-section{margin-top:48px;text-align:center;padding:32px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;position:relative;overflow:hidden;}
 .contact-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center bottom,rgba(255,215,0,0.06),transparent 70%);}
 .contact-section h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;position:relative;}
@@ -136,10 +241,9 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 .contact-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:50px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:1px;text-decoration:none;transition:all 0.3s;}
 .contact-btn img{width:22px;height:22px;object-fit:contain;border-radius:4px;}
 .btn-whatsapp{background:rgba(37,211,102,0.12);border:1.5px solid rgba(37,211,102,0.4);color:#25D366;}
-.btn-whatsapp:hover{background:rgba(37,211,102,0.22);transform:translateY(-2px);box-shadow:0 6px 24px rgba(37,211,102,0.2);}
+.btn-whatsapp:hover{background:rgba(37,211,102,0.22);transform:translateY(-2px);}
 .btn-telegram{background:rgba(0,136,204,0.12);border:1.5px solid rgba(0,136,204,0.4);color:#0088cc;}
-.btn-telegram:hover{background:rgba(0,136,204,0.22);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,136,204,0.2);}
-
+.btn-telegram:hover{background:rgba(0,136,204,0.22);transform:translateY(-2px);}
 .footer-note{margin-top:32px;text-align:center;font-size:0.78rem;color:var(--text-muted);padding-bottom:20px;}
 .particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:float-up linear infinite;}
@@ -154,15 +258,13 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 <div class="particles" id="particles"></div>
 <div class="toast" id="toast"></div>
 
-<!-- â”€â”€ BANNER IMAGE â”€â”€ -->
+<!-- BANNER -->
 <div class="banner-wrap">
-  <img src="https://i.imgur.com/tS1Y7nt.jpeg"
-       alt="MLBB Top Up Nepal"
-       onerror="this.parentElement.style.display='none'" />
+  <img src="https://drive.google.com/uc?export=view&id=1SQQHXJix2SMalQsY7HEGezalDBCtBIHa" alt="MLBB Top Up Nepal" onerror="this.parentElement.style.display='none'" />
   <div class="banner-overlay"></div>
 </div>
 
-<!-- â”€â”€ HERO â”€â”€ -->
+<!-- HERO -->
 <div class="hero">
   <div class="logo-wrap">
     <div class="logo-icon">&#x1F48E;</div>
@@ -185,18 +287,10 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
   </div>
   <div class="game-id-card">
     <div class="game-id-grid">
-      <div class="input-group">
-        <label>User ID</label>
-        <input type="text" id="userId" placeholder="e.g. 123456789" />
-      </div>
-      <div class="input-group">
-        <label>Zone ID</label>
-        <input type="text" id="zoneId" placeholder="e.g. 1234" />
-      </div>
+      <div class="input-group"><label>User ID</label><input type="text" id="userId" placeholder="e.g. 123456789" /></div>
+      <div class="input-group"><label>Zone ID</label><input type="text" id="zoneId" placeholder="e.g. 1234" /></div>
     </div>
-    <div class="id-hint">
-      <strong>How to find your ID?</strong> Open MLBB &rarr; Tap your profile picture &rarr; Your User ID and Zone ID are shown below your name.
-    </div>
+    <div class="id-hint"><strong>How to find your ID?</strong> Open MLBB &rarr; Tap your profile picture &rarr; Your User ID and Zone ID are shown below your name.</div>
   </div>
 
   <!-- STEP 2 -->
@@ -209,6 +303,28 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
     <div class="loading-grid">Loading packages...</div>
   </div>
 
+  <!-- WEEKLY DIAMOND PASS (rendered by JS) -->
+  <div id="weeklySection" style="display:none;">
+    <div class="special-section">
+      <div class="special-section-label">
+        <span class="fire">&#x1F525;</span>
+        <h3>Weekly Diamond Pass</h3>
+      </div>
+      <div class="weekly-grid" id="weeklyGrid"></div>
+    </div>
+  </div>
+
+  <!-- TWILIGHT PASS (rendered by JS) -->
+  <div id="twilightSection" style="display:none;">
+    <div class="special-section">
+      <div class="special-section-label">
+        <span class="fire">&#x2728;</span>
+        <h3>Twilight Pass</h3>
+      </div>
+      <div id="twilightGrid"></div>
+    </div>
+  </div>
+
   <!-- STEP 3 -->
   <div class="section-header">
     <div class="step-badge">3</div>
@@ -217,35 +333,26 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
   </div>
 
   <div class="payment-grid">
-    <!-- eSewa card with real logo -->
     <div class="payment-card" id="pay-esewa">
       <div class="pay-logo">
-        <img src="https://i.imgur.com/BrURd1u.png"
-             alt="eSewa"
-             onerror="this.outerHTML='<div class=pay-logo-fallback pay-esewa-bg>E</div>'" />
+        <img src="https://drive.google.com/uc?export=view&id=1FyJmemVY-k1DykLs46slcMqj_9Js3R9S" alt="eSewa" onerror="this.parentElement.innerHTML='<span style=font-size:28px>E</span>'" />
       </div>
       <div class="pay-info"><h4>eSewa</h4><p>Instant &bull; Recommended</p></div>
     </div>
-    <!-- Bank card -->
     <div class="payment-card" id="pay-bank">
-      <div class="pay-logo pay-logo-fallback pay-bank-bg" style="font-size:28px;">&#x1F3E6;</div>
+      <div class="pay-logo pay-bank-bg">&#x1F3E6;</div>
       <div class="pay-info"><h4>Bank Transfer</h4><p>All banks accepted</p></div>
     </div>
   </div>
 
-  <!-- eSewa detail -->
   <div class="pay-detail" id="detail-esewa">
     <h4>eSewa Payment Details</h4>
     <div class="pay-row"><span>eSewa ID</span><span>9702764422 <button class="copy-btn" id="copyEsewa">Copy</button></span></div>
     <div class="pay-row"><span>Account Name</span><span>MLBB TopUp Nepal</span></div>
     <div class="pay-note">After payment, upload your receipt screenshot below. Diamonds delivered within <strong>5 minutes</strong>.</div>
-    <div class="receipt-upload">
-      <label>Upload Receipt Screenshot</label>
-      <input type="file" id="receiptEsewa" accept="image/*" />
-    </div>
+    <div class="receipt-upload"><label>Upload Receipt Screenshot</label><input type="file" id="receiptEsewa" accept="image/*" /></div>
   </div>
 
-  <!-- Bank detail -->
   <div class="pay-detail" id="detail-bank">
     <h4>Bank Transfer Details</h4>
     <div class="pay-row"><span>Bank</span><span>Global IME</span></div>
@@ -253,13 +360,10 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
     <div class="pay-row"><span>Account Name</span><span>MLBB TopUp Nepal</span></div>
     <div class="pay-row"><span>Branch</span><span>Kathmandu</span></div>
     <div class="pay-note">Upload bank voucher below. Diamonds delivered within <strong>15 minutes</strong> of confirmation.</div>
-    <div class="receipt-upload">
-      <label>Upload Receipt / Voucher</label>
-      <input type="file" id="receiptBank" accept="image/*" />
-    </div>
+    <div class="receipt-upload"><label>Upload Receipt / Voucher</label><input type="file" id="receiptBank" accept="image/*" /></div>
   </div>
 
-  <!-- ORDER SUMMARY -->
+  <!-- ORDER -->
   <div class="order-section">
     <div class="order-summary">
       <div class="order-info"><div class="label">Selected Package</div><div class="value" id="selectedPackage">Select a package</div></div>
@@ -288,25 +392,21 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
     <div class="table-scroll">
       <table>
         <thead><tr><th>Package</th><th style="text-align:right">Price (NPR)</th></tr></thead>
-        <tbody id="priceTableBody"><tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:24px;">Loading prices...</td></tr></tbody>
+        <tbody id="priceTableBody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- CONTACT with real logos -->
+  <!-- CONTACT -->
   <div class="contact-section" style="margin-top:40px;">
     <h3>Get Help &amp; Order Support</h3>
     <div class="contact-btns">
       <a href="https://wa.me/9779702764422" class="contact-btn btn-whatsapp" target="_blank">
-        <img src="https://i.imgur.com/Nhvb2uy.png"
-             alt="WhatsApp"
-             onerror="this.outerHTML='&#x1F4F1;'" />
+        <img src="https://drive.google.com/uc?export=view&id=1nkGkrdrx86nOl4YxLa_3FfHiqet7-DiU" alt="WhatsApp" onerror="this.outerHTML=''" />
         WhatsApp Us
       </a>
       <a href="https://t.me/yourtelegram" class="contact-btn btn-telegram" target="_blank">
-        <img src="https://i.imgur.com/jTtfvHP.png"
-             alt="Telegram"
-             onerror="this.outerHTML='&#x2708;'" />
+        <img src="https://drive.google.com/uc?export=view&id=1I-uxk6wWbrYu7iVz5fi3fkvSs4HdOdPl" alt="Telegram" onerror="this.outerHTML=''" />
         Telegram
       </a>
     </div>
@@ -324,31 +424,127 @@ var API = window.location.hostname === 'localhost' && window.location.port === '
 var selectedPackage = null;
 var selectedPay = null;
 
+// Image URLs for special packages
+var WEEKLY_IMG   = 'https://i.imgur.com/wpjoOwV.jpeg';
+var TWILIGHT_IMG = 'https://i.imgur.com/Lhj3x20.jpeg';
+
 function getDiamondSVG() {
   return '<svg class="diamond-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="dg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00C8FF"/><stop offset="50%" stop-color="#4488FF"/><stop offset="100%" stop-color="#0022CC"/></linearGradient><linearGradient id="dg2" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.6)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></linearGradient></defs><polygon points="22,3 38,16 22,41 6,16" fill="url(#dg)" stroke="#00C8FF" stroke-width="0.8"/><polygon points="22,3 38,16 22,20" fill="url(#dg2)" opacity="0.5"/><polygon points="22,3 6,16 22,20" fill="url(#dg2)" opacity="0.2"/><line x1="6" y1="16" x2="38" y2="16" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/><line x1="22" y1="3" x2="22" y2="41" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/></svg>';
+}
+
+// Detect package category from name
+function getPackageType(name) {
+  var n = name.toLowerCase();
+  if (n.indexOf('weekly pass') > -1) return 'weekly';
+  if (n.indexOf('twilight pass') > -1) return 'twilight';
+  return 'diamond';
+}
+
+// Label for weekly variants e.g. "Weekly Pass 2x" -> "2x Weekly Diamond Pass"
+function weeklyLabel(name) {
+  var match = name.match(/(\d+)x/i);
+  if (match) return match[1] + 'x Weekly Diamond Pass';
+  return 'Weekly Diamond Pass';
+}
+
+function selectPkg(p) {
+  // Deselect all cards across all grids
+  document.querySelectorAll('.diamond-card, .special-card, .twilight-card').forEach(function(c){ c.classList.remove('selected'); });
+  selectedPackage = p;
+  var el = document.getElementById('pkgcard-' + p.id);
+  if (el) el.classList.add('selected');
+  document.getElementById('selectedPackage').textContent = p.name;
+  document.getElementById('selectedPrice').textContent   = 'Rs' + p.price;
 }
 
 function loadPackages() {
   fetch(API + '/packages')
   .then(function(r){ return r.json(); })
   .then(function(pkgs){
+    var diamonds  = pkgs.filter(function(p){ return getPackageType(p.name) === 'diamond'; });
+    var weeklies  = pkgs.filter(function(p){ return getPackageType(p.name) === 'weekly'; });
+    var twilights = pkgs.filter(function(p){ return getPackageType(p.name) === 'twilight'; });
+
+    // ── Diamond grid ──────────────────────────────────
     var grid = document.getElementById('diamondGrid');
-    if (!pkgs.length) { grid.innerHTML = '<div class="loading-grid">No packages available</div>'; return; }
-    grid.innerHTML = '';
-    pkgs.forEach(function(p) {
-      var card = document.createElement('div');
-      card.className = 'diamond-card';
-      card.id = 'dc-' + p.id;
-      card.innerHTML =
-        '<div class="selected-check">&#x2713;</div>' +
-        '<div class="card-top">' + getDiamondSVG() +
-        '<div><div class="diamond-name">' + p.name + '</div>' +
-        '<div class="diamond-bonus">+' + p.bonus + ' Bonus</div></div></div>' +
-        '<div class="card-bottom"><div class="price-new">Rs' + p.price + '</div>' +
-        '<div class="discount-tag">BEST</div></div>';
-      card.addEventListener('click', function(){ selectPackage(p); });
-      grid.appendChild(card);
-    });
+    if (!diamonds.length) { grid.innerHTML = '<div class="loading-grid">No packages available</div>'; }
+    else {
+      grid.innerHTML = '';
+      diamonds.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'diamond-card';
+        card.id = 'pkgcard-' + p.id;
+        card.innerHTML =
+          '<div class="selected-check">&#x2713;</div>' +
+          '<div class="card-top">' + getDiamondSVG() +
+          '<div><div class="diamond-name">' + p.name + '</div>' +
+          '<div class="diamond-bonus">+' + p.bonus + ' Bonus</div></div></div>' +
+          '<div class="card-bottom"><div class="price-new">Rs' + p.price + '</div>' +
+          '<div class="discount-tag">BEST</div></div>';
+        card.addEventListener('click', function(){ selectPkg(p); });
+        grid.appendChild(card);
+      });
+    }
+
+    // ── Weekly Diamond Pass ───────────────────────────
+    if (weeklies.length) {
+      document.getElementById('weeklySection').style.display = 'block';
+      var wgrid = document.getElementById('weeklyGrid');
+      wgrid.innerHTML = '';
+
+      // Sort: 1x, 2x, 3x, 4x
+      weeklies.sort(function(a,b){
+        var am = a.name.match(/(\d+)x/i), bm = b.name.match(/(\d+)x/i);
+        return (am ? parseInt(am[1]) : 0) - (bm ? parseInt(bm[1]) : 0);
+      });
+
+      weeklies.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'special-card';
+        card.id = 'pkgcard-' + p.id;
+        var label = weeklyLabel(p.name);
+        card.innerHTML =
+          '<div class="selected-check">&#x2713;</div>' +
+          '<div class="special-img-wrap">' +
+          '<img src="' + WEEKLY_IMG + '" alt="Weekly Pass" />' +
+          '<span class="special-badge">Special</span>' +
+          '</div>' +
+          '<div class="special-name">' + label + '</div>' +
+          '<div class="special-label-from">From</div>' +
+          '<div class="special-pricing">' +
+          '<div class="special-price">Rs' + p.price + '</div>' +
+          '<div class="special-discount">-4%</div>' +
+          '</div>';
+        card.addEventListener('click', function(){ selectPkg(p); });
+        wgrid.appendChild(card);
+      });
+    }
+
+    // ── Twilight Pass ─────────────────────────────────
+    if (twilights.length) {
+      document.getElementById('twilightSection').style.display = 'block';
+      var tgrid = document.getElementById('twilightGrid');
+      tgrid.innerHTML = '';
+      twilights.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'twilight-card';
+        card.id = 'pkgcard-' + p.id;
+        card.innerHTML =
+          '<div class="selected-check">&#x2713;</div>' +
+          '<img class="twilight-img" src="' + TWILIGHT_IMG + '" alt="Twilight Pass" />' +
+          '<div class="twilight-info">' +
+          '<div class="twilight-name">Twilight Pass</div>' +
+          '<div class="twilight-from">From</div>' +
+          '<div class="twilight-pricing">' +
+          '<div class="twilight-price">Rs' + p.price + '</div>' +
+          '<div class="twilight-discount">-4%</div>' +
+          '</div></div>';
+        card.addEventListener('click', function(){ selectPkg(p); });
+        tgrid.appendChild(card);
+      });
+    }
+
+    // ── Price table ───────────────────────────────────
     var tbody = document.getElementById('priceTableBody');
     tbody.innerHTML = pkgs.map(function(p){
       return '<tr><td>' + p.name + '</td><td>Rs' + p.price + '</td></tr>';
@@ -360,20 +556,12 @@ function loadPackages() {
   });
 }
 
-function selectPackage(p) {
-  if (selectedPackage) { var old = document.getElementById('dc-' + selectedPackage.id); if (old) old.classList.remove('selected'); }
-  selectedPackage = p;
-  document.getElementById('dc-' + p.id).classList.add('selected');
-  document.getElementById('selectedPackage').textContent = p.name;
-  document.getElementById('selectedPrice').textContent = 'Rs' + p.price;
-}
-
 function selectPayment(method) {
   selectedPay = method;
   document.getElementById('pay-esewa').classList.toggle('selected', method === 'esewa');
-  document.getElementById('pay-bank').classList.toggle('selected', method === 'bank');
+  document.getElementById('pay-bank').classList.toggle('selected',  method === 'bank');
   document.getElementById('detail-esewa').classList.toggle('visible', method === 'esewa');
-  document.getElementById('detail-bank').classList.toggle('visible', method === 'bank');
+  document.getElementById('detail-bank').classList.toggle('visible',  method === 'bank');
   document.getElementById('selectedPayment').textContent = method === 'esewa' ? 'eSewa' : 'Bank Transfer';
 }
 
@@ -381,15 +569,15 @@ function placeOrder() {
   var uid = document.getElementById('userId').value.trim();
   var zid = document.getElementById('zoneId').value.trim();
   if (!uid || !zid)     { showToast('Please enter your User ID and Zone ID!', true); return; }
-  if (!selectedPackage) { showToast('Please select a diamond package!', true); return; }
+  if (!selectedPackage) { showToast('Please select a package!', true); return; }
   if (!selectedPay)     { showToast('Please select a payment method!', true); return; }
   var receiptInput = selectedPay === 'esewa' ? document.getElementById('receiptEsewa') : document.getElementById('receiptBank');
   var btn = document.getElementById('orderBtn');
   btn.disabled = true; btn.textContent = 'Placing Order...';
   var formData = new FormData();
-  formData.append('gameUserId', uid);
-  formData.append('gameZoneId', zid);
-  formData.append('packageId', selectedPackage.id);
+  formData.append('gameUserId',    uid);
+  formData.append('gameZoneId',    zid);
+  formData.append('packageId',     selectedPackage.id);
   formData.append('paymentMethod', selectedPay);
   if (receiptInput && receiptInput.files[0]) formData.append('receipt', receiptInput.files[0]);
   fetch(API + '/orders', { method: 'POST', body: formData })
@@ -401,11 +589,9 @@ function placeOrder() {
     document.getElementById('successBanner').classList.add('show');
     showToast('Order placed! Ref: #' + res.d.order.id);
     selectedPackage = null; selectedPay = null;
-    document.querySelectorAll('.diamond-card').forEach(function(c){ c.classList.remove('selected'); });
-    document.querySelectorAll('.payment-card').forEach(function(c){ c.classList.remove('selected'); });
-    document.querySelectorAll('.pay-detail').forEach(function(c){ c.classList.remove('visible'); });
+    document.querySelectorAll('.diamond-card,.special-card,.twilight-card,.payment-card,.pay-detail').forEach(function(c){ c.classList.remove('selected','visible'); });
     document.getElementById('selectedPackage').textContent = 'Select a package';
-    document.getElementById('selectedPrice').textContent = 'Rs --';
+    document.getElementById('selectedPrice').textContent   = 'Rs --';
     document.getElementById('selectedPayment').textContent = 'Select payment';
   })
   .catch(function(){ btn.disabled=false; btn.textContent='PLACE ORDER NOW'; showToast('Network error. Try again.', true); });
@@ -433,7 +619,39 @@ for (var i = 0; i < 20; i++) {
   if (Math.random() > 0.5) p.style.background = '#00C8FF';
   pc.appendChild(p);
 }
+
 loadPackages();
 </script>
 </body>
 </html>
+"@
+
+$stream2 = [System.IO.StreamWriter]::new(
+    (Join-Path (Get-Location).Path "mlbb-topup.html"),
+    $false,
+    (New-Object System.Text.UTF8Encoding $false)
+)
+$stream2.Write($html)
+$stream2.Close()
+
+Write-Host "      mlbb-topup.html updated." -ForegroundColor Green
+Write-Host ""
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "  Special Packages UI Done!" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  HOW ADMIN PANEL CONTROLS THESE:" -ForegroundColor White
+Write-Host ""
+Write-Host "  Weekly Pass packages: name must contain 'Weekly Pass'" -ForegroundColor Gray
+Write-Host "    e.g. 'Weekly Pass 1x', 'Weekly Pass 2x', etc." -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "  Twilight Pass: name must contain 'Twilight Pass'" -ForegroundColor Gray
+Write-Host "    e.g. 'Twilight Pass'" -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "  To change price: Admin Panel > Packages > Edit" -ForegroundColor Gray
+Write-Host "  To hide: Admin Panel > Packages > Deactivate" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  NOTE: If backend is not running locally, run:" -ForegroundColor Yellow
+Write-Host "  cd backend && npm run dev" -ForegroundColor DarkGray
+Write-Host "  Then re-run: node add_special_packages.js" -ForegroundColor DarkGray
+Write-Host ""

@@ -1,3 +1,17 @@
+# ============================================================
+#  MLBB TopUp Nepal - Visual Upgrade
+#  Adds real logos + banner image from Google Drive
+#  Run from: D:\MLBB>  .\phase_visual_upgrade.ps1
+# ============================================================
+
+Write-Host ""
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "  MLBB Visual Upgrade - Real Logos + Banner" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "[1/1] Writing upgraded mlbb-topup.html..." -ForegroundColor Yellow
+
+$html = @"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,12 +27,12 @@ html{scroll-behavior:smooth;}
 body{font-family:'Exo 2',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 10%,rgba(0,71,255,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(0,200,255,0.08) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 50% 50%,rgba(255,215,0,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;}
 
-/* â”€â”€ BANNER â”€â”€ */
+/* ── BANNER ── */
 .banner-wrap{position:relative;z-index:1;width:100%;max-height:320px;overflow:hidden;}
 .banner-wrap img{width:100%;max-height:320px;object-fit:cover;object-position:center top;display:block;}
 .banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,0) 30%,rgba(8,12,20,0.95) 100%);}
 
-/* â”€â”€ HERO â”€â”€ */
+/* ── HERO ── */
 .hero{position:relative;z-index:1;text-align:center;padding:32px 20px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,71,255,0.06) 0%,transparent 100%);}
 .logo-wrap{display:inline-flex;align-items:center;gap:16px;margin-bottom:8px;}
 .logo-icon{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#FFD700,#FF6B00);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 30px rgba(255,215,0,0.4),0 0 60px rgba(255,107,0,0.2);animation:pulse-logo 3s ease-in-out infinite;}
@@ -65,7 +79,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .loading-grid{text-align:center;padding:40px;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:2px;}
 .diamond-svg{width:44px;height:44px;flex-shrink:0;}
 
-/* â”€â”€ PAYMENT CARDS â”€â”€ */
+/* ── PAYMENT CARDS ── */
 .payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 @media(max-width:480px){.payment-grid{grid-template-columns:1fr;}}
 .payment-card{background:var(--bg-card);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:14px;}
@@ -79,7 +93,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .pay-info h4{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;}
 .pay-info p{font-size:0.78rem;color:var(--text-muted);margin-top:2px;}
 
-/* â”€â”€ PAYMENT DETAILS â”€â”€ */
+/* ── PAYMENT DETAILS ── */
 .pay-detail{display:none;background:var(--bg-card2);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-top:6px;animation:fadeIn 0.3s ease;}
 .pay-detail.visible{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
@@ -96,7 +110,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .receipt-upload input[type=file]{width:100%;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,215,0,0.3);border-radius:10px;padding:12px 16px;color:var(--text-muted);font-size:0.85rem;cursor:pointer;outline:none;}
 .receipt-upload input[type=file]:hover{border-color:var(--gold);}
 
-/* â”€â”€ ORDER â”€â”€ */
+/* ── ORDER ── */
 .order-section{margin-top:28px;text-align:center;}
 .order-summary{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
 .order-info{text-align:left;}
@@ -111,7 +125,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .success-banner p{font-size:0.85rem;color:var(--text-muted);line-height:1.6;}
 .success-banner .order-ref{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:#00E676;font-weight:700;margin:8px 0;}
 
-/* â”€â”€ PRICE TABLE â”€â”€ */
+/* ── PRICE TABLE ── */
 .price-table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
 .price-table-header{background:linear-gradient(90deg,rgba(255,215,0,0.12),rgba(255,107,0,0.08));padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .price-table-header h3{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1rem;color:var(--gold);letter-spacing:1px;}
@@ -128,7 +142,7 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 .table-scroll::-webkit-scrollbar{width:4px;}
 .table-scroll::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.3);border-radius:4px;}
 
-/* â”€â”€ CONTACT â”€â”€ */
+/* ── CONTACT ── */
 .contact-section{margin-top:48px;text-align:center;padding:32px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;position:relative;overflow:hidden;}
 .contact-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center bottom,rgba(255,215,0,0.06),transparent 70%);}
 .contact-section h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;position:relative;}
@@ -154,15 +168,15 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 <div class="particles" id="particles"></div>
 <div class="toast" id="toast"></div>
 
-<!-- â”€â”€ BANNER IMAGE â”€â”€ -->
+<!-- ── BANNER IMAGE ── -->
 <div class="banner-wrap">
-  <img src="https://i.imgur.com/tS1Y7nt.jpeg"
+  <img src="https://drive.google.com/uc?export=view&id=1SQQHXJix2SMalQsY7HEGezalDBCtBIHa"
        alt="MLBB Top Up Nepal"
        onerror="this.parentElement.style.display='none'" />
   <div class="banner-overlay"></div>
 </div>
 
-<!-- â”€â”€ HERO â”€â”€ -->
+<!-- ── HERO ── -->
 <div class="hero">
   <div class="logo-wrap">
     <div class="logo-icon">&#x1F48E;</div>
@@ -220,7 +234,7 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
     <!-- eSewa card with real logo -->
     <div class="payment-card" id="pay-esewa">
       <div class="pay-logo">
-        <img src="https://i.imgur.com/BrURd1u.png"
+        <img src="https://drive.google.com/uc?export=view&id=1FyJmemVY-k1DykLs46slcMqj_9Js3R9S"
              alt="eSewa"
              onerror="this.outerHTML='<div class=pay-logo-fallback pay-esewa-bg>E</div>'" />
       </div>
@@ -298,13 +312,13 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
     <h3>Get Help &amp; Order Support</h3>
     <div class="contact-btns">
       <a href="https://wa.me/9779702764422" class="contact-btn btn-whatsapp" target="_blank">
-        <img src="https://i.imgur.com/Nhvb2uy.png"
+        <img src="https://drive.google.com/uc?export=view&id=1nkGkrdrx86nOl4YxLa_3FfHiqet7-DiU"
              alt="WhatsApp"
              onerror="this.outerHTML='&#x1F4F1;'" />
         WhatsApp Us
       </a>
       <a href="https://t.me/yourtelegram" class="contact-btn btn-telegram" target="_blank">
-        <img src="https://i.imgur.com/jTtfvHP.png"
+        <img src="https://drive.google.com/uc?export=view&id=1I-uxk6wWbrYu7iVz5fi3fkvSs4HdOdPl"
              alt="Telegram"
              onerror="this.outerHTML='&#x2708;'" />
         Telegram
@@ -437,3 +451,29 @@ loadPackages();
 </script>
 </body>
 </html>
+"@
+
+$stream = [System.IO.StreamWriter]::new(
+    (Join-Path (Get-Location).Path "mlbb-topup.html"),
+    $false,
+    (New-Object System.Text.UTF8Encoding $false)
+)
+$stream.Write($html)
+$stream.Close()
+
+Write-Host "      mlbb-topup.html updated with real logos + banner." -ForegroundColor Green
+Write-Host ""
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "  Visual Upgrade Done!" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  IMPORTANT - Images won't load unless your" -ForegroundColor Yellow
+Write-Host "  Google Drive files are set to public!" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  For each file in Drive:" -ForegroundColor White
+Write-Host "  Right-click file > Share > Anyone with the link > Viewer" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  If images still don't load after making public," -ForegroundColor White
+Write-Host "  upload them to imgur.com (free, no login needed)" -ForegroundColor Gray
+Write-Host "  and swap the URLs in mlbb-topup.html" -ForegroundColor Gray
+Write-Host ""
