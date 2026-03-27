@@ -147,10 +147,164 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(255,215,0,0.15);border:1px solid var(--gold);border-radius:50px;padding:12px 24px;font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--gold);font-size:0.9rem;z-index:999;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);backdrop-filter:blur(12px);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.error{background:rgba(255,45,85,0.15);border-color:#FF2D55;color:#FF2D55;}
+
+/* SPECIAL OFFER SECTIONS */
+.special-section{margin-top:32px;}
+.special-section-label{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.special-section-label .fire{font-size:20px;}
+.special-section-label h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:1px;color:#fff;text-transform:uppercase;}
+.weekly-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.special-card{background:var(--bg-card);border:1.5px solid rgba(255,215,0,0.1);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
+.special-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.06),transparent);opacity:0;transition:opacity 0.25s;}
+.special-card:hover{border-color:rgba(255,215,0,0.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,0.15);}
+.special-card:hover::after,.special-card.selected::after{opacity:1;}
+.special-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,215,0,0.3),0 8px 30px rgba(255,215,0,0.2);background:rgba(255,215,0,0.06);}
+.special-card .sel-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;color:#000;font-weight:900;z-index:2;}
+.special-card.selected .sel-check{display:flex;}
+.special-img-wrap{position:relative;margin-bottom:10px;}
+.special-img-wrap img{width:100%;height:80px;object-fit:cover;border-radius:8px;display:block;}
+.special-badge{position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#FF2D55,#FF6B00);border-radius:5px;padding:2px 8px;font-size:0.65rem;font-weight:700;color:#fff;font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.special-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:8px;line-height:1.3;}
+.special-label-from{font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.special-pricing{display:flex;align-items:center;justify-content:space-between;}
+.special-price{font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700;color:var(--gold);}
+.special-discount{background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.3);border-radius:5px;padding:1px 6px;font-size:0.7rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;}
+.twilight-card{background:var(--bg-card);border:1.5px solid rgba(255,215,0,0.1);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;display:flex;align-items:center;gap:16px;max-width:420px;}
+.twilight-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,215,0,0.06),transparent);opacity:0;transition:opacity 0.25s;}
+.twilight-card:hover{border-color:rgba(255,215,0,0.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,0.15);}
+.twilight-card:hover::after,.twilight-card.selected::after{opacity:1;}
+.twilight-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,215,0,0.3),0 8px 30px rgba(255,215,0,0.2);background:rgba(255,215,0,0.06);}
+.twilight-card .sel-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:11px;color:#000;font-weight:900;z-index:2;}
+.twilight-card.selected .sel-check{display:flex;}
+.twilight-img{width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.twilight-info{flex:1;}
+.twilight-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:6px;}
+.twilight-from{font-size:0.68rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.twilight-pricing{display:flex;align-items:center;gap:10px;}
+.twilight-price{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--gold);}
+.twilight-discount{background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.3);border-radius:5px;padding:1px 7px;font-size:0.72rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;}
+.navbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:rgba(8,12,20,0.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,0.1);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#FFD700,#FF6B00);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-logo-text{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1rem;background:linear-gradient(90deg,#FFD700,#FF6B00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-user{display:none;align-items:center;gap:10px;}
+.nav-user-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.9rem;color:var(--gold);}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#FF6B00);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;}
+.btn-nav{padding:8px 20px;border-radius:50px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;border:none;}
+.btn-nav-login{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;}
+.btn-nav-login:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,215,0,0.4);color:var(--gold);}
+.btn-nav-register{background:linear-gradient(135deg,#FFD700,#FF6B00);color:#000;}
+.btn-nav-register:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,215,0,0.4);}
+.btn-nav-logout{background:rgba(255,45,85,0.1);border:1px solid rgba(255,45,85,0.3);color:var(--red);padding:6px 16px;border-radius:50px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.82rem;cursor:pointer;}
+.btn-nav-logout:hover{background:rgba(255,45,85,0.2);}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.auth-overlay.open{display:flex;}
+.auth-box{background:#0E1422;border:1px solid rgba(255,215,0,0.15);border-radius:20px;padding:36px 32px;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;}
+.auth-box::-webkit-scrollbar{width:4px;}
+.auth-box::-webkit-scrollbar-thumb{background:rgba(255,215,0,0.3);border-radius:4px;}
+.auth-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FFD700,transparent);border-radius:20px 20px 0 0;}
+.auth-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-muted);font-size:1.4rem;cursor:pointer;line-height:1;}
+.auth-close:hover{color:#fff;}
+.auth-title{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:6px;}
+.auth-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:22px;line-height:1.5;}
+.auth-field{margin-bottom:14px;}
+.auth-field label{display:block;font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.auth-field input,.auth-field select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:12px 14px;font-family:'Exo 2',sans-serif;font-size:0.92rem;color:#fff;outline:none;transition:all 0.3s;}
+.auth-field input::placeholder{color:rgba(255,255,255,0.2);}
+.auth-field input:focus,.auth-field select:focus{border-color:var(--gold);background:rgba(255,215,0,0.04);box-shadow:0 0 16px rgba(255,215,0,0.08);}
+.auth-field select{appearance:none;cursor:pointer;background-color:#0E1422;}
+.auth-phone-row{display:grid;grid-template-columns:160px 1fr;gap:10px;}
+.auth-pw-wrap{position:relative;}
+.auth-pw-wrap input{padding-right:44px;}
+.auth-pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;padding:4px;}
+.auth-pw-toggle:hover{color:var(--gold);}
+.auth-name-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.auth-check-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.auth-remember{display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;}
+.auth-remember input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;}
+.auth-forgot{font-size:0.82rem;color:var(--gold);text-decoration:none;font-family:'Rajdhani',sans-serif;font-weight:600;}
+.auth-forgot:hover{text-decoration:underline;}
+.auth-submit{width:100%;background:linear-gradient(135deg,#FFD700,#FF6B00);border:none;border-radius:50px;padding:13px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.85rem;color:#000;cursor:pointer;letter-spacing:1px;transition:all 0.3s;margin-bottom:14px;}
+.auth-submit:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(255,215,0,0.45);}
+.auth-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.auth-switch{text-align:center;font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;}
+.auth-switch-btn{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:11px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.88rem;color:#ccc;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.auth-switch-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.auth-err{font-size:0.8rem;color:var(--red);min-height:16px;margin-bottom:6px;text-align:center;}
+.auth-ok{font-size:0.8rem;color:#00E676;min-height:16px;margin-bottom:6px;text-align:center;}
+.login-gate{display:none;margin-top:16px;padding:18px 22px;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:14px;text-align:center;}
+.login-gate p{font-family:'Rajdhani',sans-serif;font-size:0.95rem;color:var(--text-muted);margin-bottom:12px;}
+.login-gate p strong{color:var(--gold);}
+.gate-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.gate-btn-login{padding:10px 28px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);border-radius:50px;color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;}
+.gate-btn-login:hover{border-color:var(--gold);color:var(--gold);}
+.gate-btn-register{padding:10px 28px;background:linear-gradient(135deg,#FFD700,#FF6B00);border:none;border-radius:50px;color:#000;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;}
+.gate-btn-register:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,215,0,0.4);}
 </style>
 </head>
 <body>
 
+<nav class="navbar">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">&#x1F48E;</div>
+    <span class="nav-logo-text">MLBB TOP UP</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-user" id="navUser">
+      <div class="nav-avatar" id="navAvatar">A</div>
+      <span class="nav-user-name" id="navUserName">User</span>
+      <button class="btn-nav-logout" id="navLogoutBtn">Logout</button>
+    </div>
+    <div id="navAuthBtns">
+      <button class="btn-nav btn-nav-login" id="navLoginBtn">Login</button>
+      <button class="btn-nav btn-nav-register" id="navRegisterBtn">Register</button>
+    </div>
+  </div>
+</nav>
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <button class="auth-close" id="authClose">&#x00D7;</button>
+    <div id="panelLogin">
+      <div class="auth-title">Sign In</div>
+      <div class="auth-sub">Please sign in to your account and start the adventure...</div>
+      <div class="auth-field"><label>Your Email or Username or Phone Number</label><input type="text" id="loginIdentifier" placeholder="name@example.com" /></div>
+      <div class="auth-field"><label>Your password</label><div class="auth-pw-wrap"><input type="password" id="loginPassword" placeholder="Password" /><button class="auth-pw-toggle" id="toggleLoginPw">&#x1F441;</button></div></div>
+      <div class="auth-check-row">
+        <label class="auth-remember"><input type="checkbox" id="rememberMe" /> Remember me</label>
+        <a href="#" class="auth-forgot">Forgot Password</a>
+      </div>
+      <div class="auth-err" id="loginErr"></div>
+      <button class="auth-submit" id="loginSubmit">Sign In</button>
+      <div class="auth-switch">Don't have any account?</div>
+      <button class="auth-switch-btn" id="goRegister">Register</button>
+    </div>
+    <div id="panelRegister" style="display:none;">
+      <div class="auth-title">Sign Up</div>
+      <div class="auth-sub">Create your MLBB TopUp Nepal account</div>
+      <div class="auth-name-row">
+        <div class="auth-field"><label>First name</label><input type="text" id="regFirst" placeholder="John" /></div>
+        <div class="auth-field"><label>Last name</label><input type="text" id="regLast" placeholder="Doe" /></div>
+      </div>
+      <div class="auth-field"><label>Username</label><input type="text" id="regUsername" placeholder="username" /></div>
+      <div class="auth-field"><label>Your Email</label><input type="email" id="regEmail" placeholder="email@example.com" /></div>
+      <div class="auth-field">
+        <label>Your Phone Number</label>
+        <div class="auth-phone-row">
+          <select id="regCountry"><option value="+977">Nepal (+977)</option><option value="+91">India (+91)</option><option value="+1">USA (+1)</option><option value="+44">UK (+44)</option><option value="+61">Australia (+61)</option><option value="+65">Singapore (+65)</option></select>
+          <input type="tel" id="regPhone" placeholder="Your Phone Number" />
+        </div>
+      </div>
+      <div class="auth-field"><label>Your password</label><div class="auth-pw-wrap"><input type="password" id="regPassword" placeholder="Password" /><button class="auth-pw-toggle" id="toggleRegPw">&#x1F441;</button></div></div>
+      <div class="auth-field"><label>Confirm password</label><div class="auth-pw-wrap"><input type="password" id="regConfirm" placeholder="Confirm Password" /><button class="auth-pw-toggle" id="toggleRegConfirm">&#x1F441;</button></div></div>
+      <div class="auth-err" id="registerErr"></div>
+      <div class="auth-ok" id="registerOk"></div>
+      <button class="auth-submit" id="registerSubmit">Register</button>
+      <div class="auth-switch">Already an user?</div>
+      <button class="auth-switch-btn" id="goLogin">Sign in</button>
+    </div>
+  </div>
+</div>
 <div class="particles" id="particles"></div>
 <div class="toast" id="toast"></div>
 
@@ -208,6 +362,22 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
   <div class="diamond-grid" id="diamondGrid">
     <div class="loading-grid">Loading packages...</div>
   </div>
+  <!-- WEEKLY DIAMOND PASS -->
+  <div id="weeklySection" style="display:none;">
+    <div class="special-section">
+      <div class="special-section-label"><span class="fire">&#x1F525;</span><h3>Weekly Diamond Pass</h3></div>
+      <div class="weekly-grid" id="weeklyGrid"></div>
+    </div>
+  </div>
+
+  <!-- TWILIGHT PASS -->
+  <div id="twilightSection" style="display:none;">
+    <div class="special-section">
+      <div class="special-section-label"><span class="fire">&#x2728;</span><h3>Twilight Pass</h3></div>
+      <div id="twilightGrid"></div>
+    </div>
+  </div>
+
 
   <!-- STEP 3 -->
   <div class="section-header">
@@ -267,6 +437,13 @@ tbody tr td:last-child{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-
       <div class="order-info"><div class="label">Payment</div><div class="value" id="selectedPayment" style="color:var(--blue)">Select payment</div></div>
     </div>
     <button class="order-btn" id="orderBtn">&#x26A1; PLACE ORDER NOW</button>
+    <div class="login-gate" id="loginGate">
+      <p><strong>Login required</strong> to complete your purchase</p>
+      <div class="gate-btns">
+        <button class="gate-btn-login" id="gateLoginBtn">Sign In</button>
+        <button class="gate-btn-register" id="gateRegisterBtn">Create Account</button>
+      </div>
+    </div>
     <div class="success-banner" id="successBanner">
       <h3>Order Placed Successfully!</h3>
       <div class="order-ref" id="orderRef">#000</div>
@@ -328,6 +505,28 @@ function getDiamondSVG() {
   return '<svg class="diamond-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="dg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00C8FF"/><stop offset="50%" stop-color="#4488FF"/><stop offset="100%" stop-color="#0022CC"/></linearGradient><linearGradient id="dg2" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(255,255,255,0.6)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></linearGradient></defs><polygon points="22,3 38,16 22,41 6,16" fill="url(#dg)" stroke="#00C8FF" stroke-width="0.8"/><polygon points="22,3 38,16 22,20" fill="url(#dg2)" opacity="0.5"/><polygon points="22,3 6,16 22,20" fill="url(#dg2)" opacity="0.2"/><line x1="6" y1="16" x2="38" y2="16" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/><line x1="22" y1="3" x2="22" y2="41" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/></svg>';
 }
 
+
+var WEEKLY_IMG   = 'https://i.imgur.com/wpjoOwV.jpeg';
+var TWILIGHT_IMG = 'https://i.imgur.com/Lhj3x20.jpeg';
+
+function getPackageType(name) {
+  var n = name.toLowerCase();
+  if (n.indexOf('weekly pass') > -1) return 'weekly';
+  if (n.indexOf('twilight pass') > -1) return 'twilight';
+  return 'diamond';
+}
+function weeklyLabel(name) {
+  var m = name.match(/(\d+)x/i);
+  return m ? m[1] + 'x Weekly Diamond Pass' : 'Weekly Diamond Pass';
+}
+function selectAnyPkg(p) {
+  document.querySelectorAll('.diamond-card,.special-card,.twilight-card').forEach(function(c){ c.classList.remove('selected'); });
+  selectedPackage = p;
+  var el = document.getElementById('pkgcard-' + p.id);
+  if (el) el.classList.add('selected');
+  document.getElementById('selectedPackage').textContent = p.name;
+  document.getElementById('selectedPrice').textContent   = 'Rs' + p.price;
+}
 function loadPackages() {
   fetch(API + '/packages')
   .then(function(r){ return r.json(); })
@@ -335,10 +534,14 @@ function loadPackages() {
     var grid = document.getElementById('diamondGrid');
     if (!pkgs.length) { grid.innerHTML = '<div class="loading-grid">No packages available</div>'; return; }
     grid.innerHTML = '';
-    pkgs.forEach(function(p) {
+    var diamonds  = pkgs.filter(function(p){ return getPackageType(p.name)==='diamond'; });
+    var weeklies  = pkgs.filter(function(p){ return getPackageType(p.name)==='weekly'; });
+    var twilights = pkgs.filter(function(p){ return getPackageType(p.name)==='twilight'; });
+
+    diamonds.forEach(function(p) {
       var card = document.createElement('div');
       card.className = 'diamond-card';
-      card.id = 'dc-' + p.id;
+      card.id = 'pkgcard-' + p.id;
       card.innerHTML =
         '<div class="selected-check">&#x2713;</div>' +
         '<div class="card-top">' + getDiamondSVG() +
@@ -346,9 +549,47 @@ function loadPackages() {
         '<div class="diamond-bonus">+' + p.bonus + ' Bonus</div></div></div>' +
         '<div class="card-bottom"><div class="price-new">Rs' + p.price + '</div>' +
         '<div class="discount-tag">BEST</div></div>';
-      card.addEventListener('click', function(){ selectPackage(p); });
+      card.addEventListener('click', function(){ selectAnyPkg(p); });
       grid.appendChild(card);
     });
+
+    if (weeklies.length) {
+      document.getElementById('weeklySection').style.display = 'block';
+      var wgrid = document.getElementById('weeklyGrid');
+      wgrid.innerHTML = '';
+      weeklies.sort(function(a,b){ var am=a.name.match(/(\d+)x/i),bm=b.name.match(/(\d+)x/i); return (am?parseInt(am[1]):0)-(bm?parseInt(bm[1]):0); });
+      weeklies.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'special-card';
+        card.id = 'pkgcard-' + p.id;
+        card.innerHTML =
+          '<div class="sel-check">&#x2713;</div>' +
+          '<div class="special-img-wrap"><img src="' + WEEKLY_IMG + '" alt="Weekly Pass" /><span class="special-badge">Special</span></div>' +
+          '<div class="special-name">' + weeklyLabel(p.name) + '</div>' +
+          '<div class="special-label-from">From</div>' +
+          '<div class="special-pricing"><div class="special-price">Rs' + p.price + '</div><div class="special-discount">-4%</div></div>';
+        card.addEventListener('click', function(){ selectAnyPkg(p); });
+        wgrid.appendChild(card);
+      });
+    }
+
+    if (twilights.length) {
+      document.getElementById('twilightSection').style.display = 'block';
+      var tgrid = document.getElementById('twilightGrid');
+      tgrid.innerHTML = '';
+      twilights.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'twilight-card';
+        card.id = 'pkgcard-' + p.id;
+        card.innerHTML =
+          '<div class="sel-check">&#x2713;</div>' +
+          '<img class="twilight-img" src="' + TWILIGHT_IMG + '" alt="Twilight Pass" />' +
+          '<div class="twilight-info"><div class="twilight-name">Twilight Pass</div><div class="twilight-from">From</div>' +
+          '<div class="twilight-pricing"><div class="twilight-price">Rs' + p.price + '</div><div class="twilight-discount">-4%</div></div></div>';
+        card.addEventListener('click', function(){ selectAnyPkg(p); });
+        tgrid.appendChild(card);
+      });
+    }
     var tbody = document.getElementById('priceTableBody');
     tbody.innerHTML = pkgs.map(function(p){
       return '<tr><td>' + p.name + '</td><td>Rs' + p.price + '</td></tr>';
@@ -401,7 +642,7 @@ function placeOrder() {
     document.getElementById('successBanner').classList.add('show');
     showToast('Order placed! Ref: #' + res.d.order.id);
     selectedPackage = null; selectedPay = null;
-    document.querySelectorAll('.diamond-card').forEach(function(c){ c.classList.remove('selected'); });
+    document.querySelectorAll('.diamond-card,.special-card,.twilight-card').forEach(function(c){ c.classList.remove('selected'); });
     document.querySelectorAll('.payment-card').forEach(function(c){ c.classList.remove('selected'); });
     document.querySelectorAll('.pay-detail').forEach(function(c){ c.classList.remove('visible'); });
     document.getElementById('selectedPackage').textContent = 'Select a package';
@@ -434,6 +675,121 @@ for (var i = 0; i < 20; i++) {
   pc.appendChild(p);
 }
 loadPackages();
+var currentUser = null;
+try { var _su = localStorage.getItem("mlbb_user"); if (_su) currentUser = JSON.parse(_su); } catch(e) {}
+
+function updateNavUI() {
+  if (currentUser) {
+    document.getElementById("navUser").style.display = "flex";
+    document.getElementById("navAuthBtns").style.display = "none";
+    document.getElementById("navUserName").textContent = currentUser.name || currentUser.email.split("@")[0];
+    document.getElementById("navAvatar").textContent = (currentUser.name || currentUser.email)[0].toUpperCase();
+    var g = document.getElementById("loginGate"); if(g) g.style.display = "none";
+  } else {
+    document.getElementById("navUser").style.display = "none";
+    document.getElementById("navAuthBtns").style.display = "flex";
+  }
+}
+
+function showAuth(panel) {
+  document.getElementById("authOverlay").classList.add("open");
+  document.getElementById("panelLogin").style.display    = panel === "login"    ? "block" : "none";
+  document.getElementById("panelRegister").style.display = panel === "register" ? "block" : "none";
+  document.getElementById("loginErr").textContent = "";
+  document.getElementById("registerErr").textContent = "";
+  document.getElementById("registerOk").textContent = "";
+}
+function closeAuth() { document.getElementById("authOverlay").classList.remove("open"); }
+
+function setupPwToggle(btnId, inputId) {
+  document.getElementById(btnId).addEventListener("click", function() {
+    var inp = document.getElementById(inputId);
+    inp.type = inp.type === "password" ? "text" : "password";
+    this.style.opacity = inp.type === "text" ? "1" : "0.5";
+  });
+}
+setupPwToggle("toggleLoginPw", "loginPassword");
+setupPwToggle("toggleRegPw", "regPassword");
+setupPwToggle("toggleRegConfirm", "regConfirm");
+
+document.getElementById("navLoginBtn").addEventListener("click",     function(){ showAuth("login"); });
+document.getElementById("navRegisterBtn").addEventListener("click",  function(){ showAuth("register"); });
+document.getElementById("authClose").addEventListener("click",       closeAuth);
+document.getElementById("authOverlay").addEventListener("click",     function(e){ if(e.target===this) closeAuth(); });
+document.getElementById("goRegister").addEventListener("click",      function(){ showAuth("register"); });
+document.getElementById("goLogin").addEventListener("click",         function(){ showAuth("login"); });
+document.getElementById("gateLoginBtn").addEventListener("click",    function(){ showAuth("login"); });
+document.getElementById("gateRegisterBtn").addEventListener("click", function(){ showAuth("register"); });
+document.getElementById("navLogoutBtn").addEventListener("click", function() {
+  currentUser = null;
+  localStorage.removeItem("mlbb_user");
+  localStorage.removeItem("mlbb_token");
+  updateNavUI();
+  showToast("Logged out successfully");
+});
+
+document.getElementById("loginSubmit").addEventListener("click", function() {
+  var id  = document.getElementById("loginIdentifier").value.trim();
+  var pw  = document.getElementById("loginPassword").value;
+  var err = document.getElementById("loginErr");
+  err.textContent = "";
+  if (!id || !pw) { err.textContent = "Please fill in all fields"; return; }
+  var btn = this; btn.disabled = true; btn.textContent = "Signing in...";
+  fetch(API + "/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: id, password: pw }) })
+  .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+  .then(function(res){
+    btn.disabled = false; btn.textContent = "Sign In";
+    if (!res.ok) { err.textContent = res.d.error || "Login failed"; return; }
+    currentUser = res.d.user;
+    localStorage.setItem("mlbb_user", JSON.stringify(res.d.user));
+    localStorage.setItem("mlbb_token", res.d.token);
+    closeAuth(); updateNavUI();
+    showToast("Welcome back, " + (res.d.user.name || res.d.user.email.split("@")[0]) + "!");
+  })
+  .catch(function(){ btn.disabled=false; btn.textContent="Sign In"; err.textContent="Cannot reach server"; });
+});
+
+document.getElementById("registerSubmit").addEventListener("click", function() {
+  var first   = document.getElementById("regFirst").value.trim();
+  var last    = document.getElementById("regLast").value.trim();
+  var uname   = document.getElementById("regUsername").value.trim();
+  var email   = document.getElementById("regEmail").value.trim();
+  var country = document.getElementById("regCountry").value;
+  var phone   = document.getElementById("regPhone").value.trim();
+  var pw      = document.getElementById("regPassword").value;
+  var confirm = document.getElementById("regConfirm").value;
+  var err = document.getElementById("registerErr");
+  var ok  = document.getElementById("registerOk");
+  err.textContent = ""; ok.textContent = "";
+  if (!first||!last||!uname||!email||!pw||!confirm) { err.textContent="Please fill in all required fields"; return; }
+  if (pw !== confirm) { err.textContent="Passwords do not match"; return; }
+  if (pw.length < 6) { err.textContent="Password must be at least 6 characters"; return; }
+  var btn = this; btn.disabled = true; btn.textContent = "Creating account...";
+  fetch(API + "/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, password: pw, name: first + " " + last }) })
+  .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+  .then(function(res){
+    btn.disabled = false; btn.textContent = "Register";
+    if (!res.ok) { err.textContent = res.d.error || "Registration failed"; return; }
+    currentUser = res.d.user;
+    localStorage.setItem("mlbb_user", JSON.stringify(res.d.user));
+    localStorage.setItem("mlbb_token", res.d.token);
+    ok.textContent = "Account created! Welcome, " + first + "!";
+    setTimeout(function(){ closeAuth(); updateNavUI(); showToast("Welcome, " + first + "!"); }, 900);
+  })
+  .catch(function(){ btn.disabled=false; btn.textContent="Register"; err.textContent="Cannot reach server"; });
+});
+
+var _origPlaceOrder = placeOrder;
+placeOrder = function() {
+  if (!currentUser) {
+    document.getElementById("loginGate").style.display = "block";
+    document.getElementById("loginGate").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  _origPlaceOrder();
+};
+
+updateNavUI();
 </script>
 </body>
 </html>
